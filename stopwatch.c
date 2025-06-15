@@ -1,6 +1,11 @@
 #include <stdio.h>
 #include <windows.h> //for sleep funtion abd colors and clearing screen
 #include <conio.h> //for _kbhit and _getch 
+
+#define MAX_LAPS 10
+int lapTimes[MAX_LAPS][3]; //global lap time array
+int lapCount = 0; //global lap count
+
 void display (int hours, int minutes, int seconds, int isRunning) 
 {
     system("cls");// Clear the console screen
@@ -26,13 +31,17 @@ void display (int hours, int minutes, int seconds, int isRunning)
     SetConsoleTextAttribute(screen, 13);// Set color for the controls
 
     printf("\nControls: [S] Start/Stop\n          [R] Reset \n          [E] Exit\n");
-}
 
-// void displayTime(int h, int m, int s)
-//  {
-//     printf("\r %02d: %02d: %02d", h, m, s); // \r brings the cursor to beginning
-//     fflush(stdout); // flush output to update same line
-// }
+    if (lapCount > 0) 
+    {
+        SetConsoleTextAttribute(screen, 14);
+        printf("\nLap Times:\n");
+        for (int i = 0; i < lapCount; i++)
+         {
+            printf("Lap %d: %02d:%02d:%02d\n", i + 1, lapTimes[i][0], lapTimes[i][1], lapTimes[i][2]); //lap times
+        }
+    }
+}
 
 int main() 
 {
@@ -60,7 +69,17 @@ int main()
             {
                 hours = minutes = seconds = 0;
                 running = 0;
+                lapCount = 0;
                 display(hours, minutes, seconds, running);
+            }
+            else if (key == 'l' || key == 'L') 
+            {
+                if (lapCount < MAX_LAPS) {
+                    lapTimes[lapCount][0] = hours;
+                    lapTimes[lapCount][1] = minutes;
+                    lapTimes[lapCount][2] = seconds;
+                    lapCount++;
+                }
             }
              else if (key == 'e' || key == 'E') 
              {
@@ -77,11 +96,13 @@ int main()
             {
                 seconds = 0;
                 minutes++;
+                Beep(750, 100); //beep every minute
             }
             if (minutes == 60) 
             {
                 minutes = 0;
                 hours++;
+                Beep(1000, 100); //beep every hour 
             }
 
             display(hours, minutes, seconds, running);
@@ -91,6 +112,8 @@ int main()
             Sleep(100); // reduce CPU usage when paused....pause the execution for millisecond to update output
         }
     }
+
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15); // Reset color
 
     printf("\nStopwatch exited.\n");
     return 0;
