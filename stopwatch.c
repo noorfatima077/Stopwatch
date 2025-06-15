@@ -30,7 +30,7 @@ void display (int hours, int minutes, int seconds, int isRunning)
 
     SetConsoleTextAttribute(screen, 13);// Set color for the controls
 
-    printf("\nControls: [S] Start/Stop\n          [R] Reset \n          [E] Exit\n");
+    printf("\nControls: [S] Start/Stop\n          [R] Reset \n          [L] Lap \n          [E] Exit\n");
 
     if (lapCount > 0) 
     {
